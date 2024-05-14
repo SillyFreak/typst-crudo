@@ -2,7 +2,7 @@
 #set document(date: none)
 
 // #import "../src/lib.typ"
-#import "@preview/crudo:0.0.1"
+#import "@preview/crudo:0.1.0"
 
 #import "@preview/codly:0.2.1": *
 
