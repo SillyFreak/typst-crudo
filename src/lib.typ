@@ -239,7 +239,7 @@
 /// ````)
 ///
 /// - ..raw-blocks (content): any number of `raw` elements
-/// - main (function): the index of the `raw` element of which properties should be preserved.
+/// - main (int): the index of the `raw` element of which properties should be preserved.
 ///   Negative indices count from the back.
 /// -> content
 #let join(..raw-blocks, main: 0) = {
