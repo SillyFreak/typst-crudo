@@ -1,0 +1,123 @@
+#import "/src/lib.typ" as crudo
+
+// the output is not relevant for this test
+#set page(width: 0pt, height: 0pt)
+
+#assert.eq(
+  crudo.r2l(```txt
+  first line
+  second line
+  ```),
+  (
+    ("first line", "second line"),
+    (block: true, lang: "txt"),
+  ),
+)
+
+#assert.eq(
+  crudo.r2l(raw("first line\nsecond line")),
+  (
+    ("first line", "second line"),
+    (:),
+  ),
+)
+
+#assert.eq(
+  crudo.l2r(("first line", "second line")),
+  raw("first line\nsecond line"),
+)
+
+#assert.eq(
+  crudo.l2r(
+    ("first line", "second line"),
+    block: true,
+  ),
+  raw("first line\nsecond line", block: true),
+)
+
+#assert.eq(
+  crudo.transform(
+    ```typc
+    let foo() = {
+      // some comment
+      ... do something ...
+    }
+    ```,
+    lines => lines.filter(l => {
+      // only preserve non-comment lines
+      not l.starts-with(regex("\s*//"))
+    })
+  ),
+  raw("let foo() = {\n  ... do something ...\n}", block: true, lang: "typc"),
+)
+
+#assert.eq(
+  crudo.map(
+    ```typc
+    let foo() = {
+      // some comment
+      ... do something ...
+    }
+    ```,
+    line => line.trim()
+  ),
+  raw("let foo() = {\n// some comment\n... do something ...\n}", block: true, lang: "typc"),
+)
+
+#assert.eq(
+  crudo.filter(
+    ```typc
+    let foo() = {
+      // some comment
+      ... do something ...
+    }
+    ```,
+    l => not l.starts-with(regex("\s*//"))
+  ),
+  raw("let foo() = {\n  ... do something ...\n}", block: true, lang: "typc"),
+)
+
+#assert.eq(
+  crudo.slice(
+    ```typc
+    let foo() = {
+      // some comment
+      ... do something ...
+    }
+    ```,
+    1, 3,
+  ),
+  raw("  // some comment\n  ... do something ...", block: true, lang: "typc"),
+)
+
+#assert.eq(
+  crudo.lines(
+    ```typc
+    let foo() = {
+      // some comment
+      ... do something ...
+    }
+    ```,
+    2, "1,3-4", range(2, 4),
+  ),
+  raw("  // some comment\nlet foo() = {\n  ... do something ...\n}\n  // some comment\n  ... do something ...", block: true, lang: "typc"),
+)
+
+#assert.eq(
+  crudo.join(
+    ```java
+    let foo() = {
+      // some comment
+      ... do something ...
+    }
+    ```,
+    ```typc
+    let bar() = {
+      // some comment
+      ... do something ...
+    }
+    ```,
+    main: -1,
+  ),
+  raw("let foo() = {\n  // some comment\n  ... do something ...\n}\nlet bar() = {\n  // some comment\n  ... do something ...\n}", block: true, lang: "typc"),
+)
