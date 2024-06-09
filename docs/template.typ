@@ -77,6 +77,7 @@
   )
 
   set par(justify: true)
+  show raw.where(block: true): set par(justify: false)
   v(10em)
 
   // Outline.
@@ -91,15 +92,13 @@
       tyap: (name: "typ", icon: none, color: rgb("#239DAE")),
     ),
   )
-  show raw.where(block: true): set text(size: .95em)
+  show raw.where(block: true): set text(size: .9em)
   show raw.where(block: true): it => pad(x: 4%, it)
 
   body
 }
 
-
 #let ref-fn(name) = link(label(name), raw(name))
-
 
 #let file-code(filename, code) = pad(x: 4%, block(
   width: 100%,
@@ -115,7 +114,6 @@
     pad(x: -4.3%, code)
   }
 ))
-
 
 #let tidy-output-figure(output) = {
   set heading(numbering: none)
