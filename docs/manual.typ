@@ -48,14 +48,6 @@ While a package can't add methods such as `raw.slice()` to an element, we can at
 - #ref-fn("lines()") is similar to `slice()` but allows more advanced line selections in a single step.
 - #ref-fn("join()") combines multiple `raw` elements and is convenient e.g. to add preambles to code snippets.
 
-// This is a template for typst packages. It provides the #ref-fn("template.id()") function:
-
-// #{
-//   let lib = raw(block: true, lang: "typ", read("/src/lib.typ").trim())
-//   lib = crudo.slice(lib, 4)
-//   lib
-// }
-
 = Module reference
 
 == `crudo`
