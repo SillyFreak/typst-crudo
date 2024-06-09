@@ -10,7 +10,7 @@
 #codly()
 
 #let preamble = ```typ
-#import "@preview/crudo:0.0.1"
+#import "@preview/crudo:0.1.0"
 
 ```
 
