@@ -97,7 +97,9 @@
   body
 }
 
+
 #let ref-fn(name) = link(label(name), raw(name))
+
 
 #let file-code(filename, code) = pad(x: 4%, block(
   width: 100%,
@@ -113,6 +115,7 @@
     pad(x: -4.3%, code)
   }
 ))
+
 
 #let tidy-output-figure(output) = {
   set heading(numbering: none)
