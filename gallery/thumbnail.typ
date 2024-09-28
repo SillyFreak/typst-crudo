@@ -6,13 +6,20 @@
 
 #import "@preview/codly:0.2.1": *
 
+#set page(width: 10cm, height: auto, margin: 5mm)
+
 #show: codly-init
 #codly()
+
+From
 
 #let preamble = ```typ
 #import "@preview/crudo:0.1.0"
 
 ```
+#preamble
+
+and
 
 #let example = ````typ
 #crudo.r2l(```c
@@ -21,19 +28,13 @@ int main() {
 }
 ```)
 ````
-
-#let full-example = crudo.join(preamble, example)
-
-= The example
-
 #example
 
-= The example with preamble
+we get
 
+#let full-example = crudo.join(preamble, example)
 #full-example
 
-(usually you don't show this)
-
-= Evaluating the example
+If you execute that, you get
 
 #eval(full-example.text, mode: "markup")

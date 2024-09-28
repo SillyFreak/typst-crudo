@@ -15,7 +15,7 @@ keywords = ["raw", "code", "block"]
 categories = ["text", "scripting", "utility"]
 disciplines = []
 compiler = "0.9.0"
-exclude = ["README.md", "CHANGELOG.md", "Justfile", "docs", "gallery"]
+exclude = ["README.md", "CHANGELOG.md", "Justfile", "docs", "gallery", "thumbnail.png"]
 
 # [template]
 # path = "template"
