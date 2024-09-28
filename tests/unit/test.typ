@@ -96,11 +96,12 @@
     let foo() = {
       // some comment
       ... do something ...
+      // another comment
     }
     ```,
-    2, "1,3-4", range(2, 4),
+    "-2,4-,1", "2-3", range(3, 5), 5,
   ),
-  raw("  // some comment\nlet foo() = {\n  ... do something ...\n}\n  // some comment\n  ... do something ...", block: true, lang: "typc"),
+  raw("let foo() = {\n  // some comment\n  // another comment\n}\nlet foo() = {\n  // some comment\n  ... do something ...\n  ... do something ...\n  // another comment\n}", block: true, lang: "typc"),
 )
 
 #assert.eq(

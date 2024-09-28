@@ -154,8 +154,9 @@
 /// - a single number: that line is included in the output
 /// - an array of numbers: these lines are included in the output (a major usecase being `range()`
 ///   -- but beware that `range()` uses an exclusive end index)
-/// - a string containing numbers (e.g. `1`) and inclusive ranges (e.g. `1-2`) separated by commas.
-///   Whitespace is allowed.
+/// - a string containing numbers (e.g. `"1"`) and inclusive ranges (e.g. `"2-3"`) separated by
+///   commas. Range limits may be omitted (e.g. `"-2"`, `"2-"`), meaning the range starts/ends at
+///   the first/last line. Whitespace is allowed.
 ///
 /// All three kinds of parameters can be mixed, and lines can be selected any number of times and in
 /// any order.
@@ -166,9 +167,10 @@
 ///   let foo() = {
 ///     // some comment
 ///     ... do something ...
+///     // another comment
 ///   }
 ///   ```,
-///   2, "1,3-4", range(2, 4),
+///   "-2,4-,1", "2-3", range(3, 5), 5,
 /// )
 /// ````)
 ///
@@ -201,7 +203,9 @@
               bounds.map(int)
             } else if bounds.len() == 2 {
               // a page range
-              let (lower, upper) = bounds.map(int)
+              let (lower, upper) = bounds
+              lower = if lower != "" { int(lower) } else { 1 }
+              upper = if upper != "" { int(upper) } else { lines.len() }
               // make it inclusive
               array.range(lower, upper + 1)
             } else {
