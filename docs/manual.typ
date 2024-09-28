@@ -6,8 +6,7 @@
 #import "/src/lib.typ" as crudo
 
 #let package-meta = toml("/typst.toml").package
-// #let date = none
-#let date = datetime(year: 2024, month: 5, day: 14)
+#let date = datetime(year: 2024, month: 9, day: 28)
 
 #show: project.with(
   title: "Crudo",
