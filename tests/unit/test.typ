@@ -23,6 +23,14 @@
 )
 
 #assert.eq(
+  crudo.r2l("first line\nsecond line"),
+  (
+    ("first line", "second line"),
+    (:),
+  ),
+)
+
+#assert.eq(
   crudo.l2r(("first line", "second line")),
   raw("first line\nsecond line"),
 )
@@ -136,4 +144,16 @@
     main: -1,
   ),
   raw("let foo() = {\n  // some comment\n  ... do something ...\n}\nlet bar() = {\n  // some comment\n  ... do something ...\n}", block: true, lang: "typc"),
+)
+
+#assert.eq(
+  crudo.join(
+    "// these strings don't",
+    "// determine the properties",
+    ```typ
+    // this raw block does:
+    // still Typst!
+    ```,
+  ),
+  raw("// these strings don't\n// determine the properties\n// this raw block does:\n// still Typst!", block: true, lang: "typ"),
 )
