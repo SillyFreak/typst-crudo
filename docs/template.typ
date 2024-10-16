@@ -1,7 +1,7 @@
 // adapted from https://github.com/Mc-Zen/tidy/blob/98612b847da41ffb0d1dc26fa250df5c17d50054/docs/template.typ
 // licensed under the MIT license
 
-#import "@preview/codly:0.2.1": *
+#import "@preview/codly:1.0.0": *
 
 // The project function defines how your document looks.
 // It takes your content and some metadata and formats it.
@@ -87,11 +87,6 @@
 
   // Main body.
   show: codly-init
-  codly(
-    languages: (
-      tyap: (name: "typ", icon: none, color: rgb("#239DAE")),
-    ),
-  )
   show raw.where(block: true): set text(size: .9em)
   show raw.where(block: true): it => pad(x: 4%, it)
 

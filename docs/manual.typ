@@ -1,5 +1,5 @@
 #import "@preview/tidy:0.3.0"
-// #import "@preview/crudo:0.1.0"
+// #import "@preview/crudo:0.1.1"
 
 #import "template.typ": *
 
