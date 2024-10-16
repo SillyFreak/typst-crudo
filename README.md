@@ -17,7 +17,7 @@ The full version of this example can be found in [gallery/thumbnail.typ](gallery
 From
 
 #let preamble = ```typ
-#import "@preview/crudo:0.1.0"
+#import "@preview/crudo:0.1.1"
 
 ```
 #preamble
