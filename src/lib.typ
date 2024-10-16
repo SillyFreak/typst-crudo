@@ -7,8 +7,8 @@
 /// ```)
 /// ````)
 ///
-/// Note that even though you will usually want to use this on raw _blocks_,
-/// this is not a necessity:
+/// Note that even though you will usually want to use this on raw _blocks_, this is not a
+/// necessity:
 ///
 /// #example(ratio: 1.1, scale-preview: 100%, ````
 /// crudo.r2l(
@@ -16,10 +16,26 @@
 /// )
 /// ````)
 ///
-/// - raw-block (content): a single `raw` element
+/// For flexibility, regular strings are also supported. Strings don't have a language and aren't
+/// blocks:
+///
+/// #example(ratio: 1.1, scale-preview: 100%, ````
+/// crudo.r2l("first line\nsecond line")
+/// ````)
+///
+/// - raw-block (content, str): a single `raw` element or (multi line) string
 /// -> array
 #let r2l(raw-block) = {
-  let (text, ..fields) = raw-block.fields()
+  assert(
+    type(raw-block) == str or (type(raw-block) == content and raw-block.func() == raw),
+    message: "parameter to r2l must be a raw element or a string",
+  )
+
+  let (text, ..fields) = if type(raw-block) == str {
+    (text: raw-block)
+  } else {
+    raw-block.fields()
+  }
   (text.split("\n"), fields)
 }
 
@@ -32,8 +48,8 @@
 /// )
 /// ````)
 ///
-/// Note that even though you will usually want to construct raw _blocks_,
-/// this is not assumed. To create blocks, pass the appropriate parameter:
+/// Note that even though you will usually want to construct raw _blocks_, this is not assumed. To
+/// create blocks, pass the appropriate parameter:
 ///
 /// #example(ratio: 1.1, scale-preview: 100%, ````
 /// crudo.l2r(
@@ -67,7 +83,7 @@
 /// )
 /// ````)
 ///
-/// - raw-block (content): a single `raw` element
+/// - raw-block (content, str): a single `raw` element or (multi line) string
 /// - mapper (function): a function that takes an array of strings and returns a new one
 /// -> content
 #let transform(raw-block, mapper) = {
@@ -91,7 +107,7 @@
 /// )
 /// ````)
 ///
-/// - raw-block (content): a single `raw` element
+/// - raw-block (content, str): a single `raw` element or (multi line) string
 /// - mapper (function): a function that takes a string and returns a new one
 /// -> content
 #let map(raw-block, mapper) = {
@@ -113,7 +129,7 @@
 /// )
 /// ````)
 ///
-/// - raw-block (content): a single `raw` element
+/// - raw-block (content, str): a single `raw` element or (multi line) string
 /// - test (function): a function that takes a string and returns a new one
 /// -> content
 #let filter(raw-block, test) = {
@@ -135,7 +151,7 @@
 /// )
 /// ````)
 ///
-/// - raw-block (content): a single `raw` element
+/// - raw-block (content, str): a single `raw` element or (multi line) string
 /// - ..args (arguments): the same arguments as accepted by
 ///   #link("https://typst.app/docs/reference/foundations/array/#definitions-slice")[`array.slice()`]
 /// -> content
@@ -174,7 +190,7 @@
 /// )
 /// ````)
 ///
-/// - raw-block (content): a single `raw` element
+/// - raw-block (content, str): a single `raw` element or (multi line) string
 /// - ..line-numbers (arguments): any number of line number specifiers, as described above
 /// - zero-based (boolean): whether the supplied numbers are one-based line numbers or zero-based
 ///   indices
@@ -242,13 +258,35 @@
 /// )
 /// ````)
 ///
-/// - ..raw-blocks (content): any number of `raw` elements
-/// - main (int): the index of the `raw` element of which properties should be preserved.
-///   Negative indices count from the back.
+/// String parameters are allowed; the `main` parameter defaults to the first raw block:
+///
+/// #example(ratio: 1.1, scale-preview: 100%, ````
+/// crudo.join(
+///   "// these strings don't",
+///   "// determine the properties",
+///   ```typ
+///   // this raw block does:
+///   // still Typst!
+///   ```,
+/// )
+/// ````)
+///
+/// - ..raw-blocks (arguments): any number of single `raw` elements or (multi line) strings
+/// - main (int, auto): the index of the `raw` element of which properties should be preserved.
+///   Negative indices count from the back. ```typc auto``` chooses the first positional argument
+///   that is a `raw` element and not a string, if any.
 /// -> content
-#let join(..raw-blocks, main: 0) = {
+#let join(..raw-blocks, main: auto) = {
   assert(raw-blocks.named().len() == 0, message: "only positional arguments can be given")
   let raw-blocks = raw-blocks.pos()
+
+  let main = main
+  if main == auto {
+    main = raw-blocks.position(elem => type(elem) == content)
+    if main == none {
+      main = 0
+    }
+  }
 
   let contents = raw-blocks.map(r2l)
   let lines = contents.map(c => c.at(0)).join()

@@ -47,6 +47,8 @@ While a package can't add methods such as `raw.slice()` to an element, we can at
 - #ref-fn("lines()") is similar to `slice()` but allows more advanced line selections in a single step.
 - #ref-fn("join()") combines multiple `raw` elements and is convenient e.g. to add preambles to code snippets.
 
+All functions that accept raw elements as parameters alternatively accept simple strings. In these cases, a string `code` behaves like `raw(code)`, i.e. it's not a `block` element and has no `lang` set on it. This is mostly useful with #ref-fn("join()"), which takes multiple raw elements, but the other functions don't disallow this usage.
+
 = Module reference
 
 == `crudo`
