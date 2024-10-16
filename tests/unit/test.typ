@@ -105,6 +105,21 @@
 )
 
 #assert.eq(
+  crudo.lines(
+    zero-based: true,
+    ```typc
+    let foo() = {
+      // some comment
+      ... do something ...
+      // another comment
+    }
+    ```,
+    "-1,3-,0", "1-2", range(2, 4), 4,
+  ),
+  raw("let foo() = {\n  // some comment\n  // another comment\n}\nlet foo() = {\n  // some comment\n  ... do something ...\n  ... do something ...\n  // another comment\n}", block: true, lang: "typc"),
+)
+
+#assert.eq(
   crudo.join(
     ```java
     let foo() = {

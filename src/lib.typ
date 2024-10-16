@@ -220,8 +220,8 @@
             } else if bounds.len() == 2 {
               // a page range
               let (lower, upper) = bounds
-              lower = if lower != "" { int(lower) } else { 1 }
-              upper = if upper != "" { int(upper) } else { lines.len() }
+              lower = if lower != "" { int(lower) } else { 0 - offset }
+              upper = if upper != "" { int(upper) } else { lines.len() - 1 - offset }
               // make it inclusive
               array.range(lower, upper + 1)
             } else {
