@@ -1,14 +1,10 @@
-#import "@preview/tidy:0.3.0"
-// #import "@preview/crudo:0.1.1"
-
-#import "template.typ": *
-
+#import "template.typ" as template: *
 #import "/src/lib.typ" as crudo
 
 #let package-meta = toml("/typst.toml").package
 #let date = datetime(year: 2024, month: 9, day: 28)
 
-#show: project.with(
+#show: manual(
   title: "Crudo",
   // subtitle: "...",
   authors: package-meta.authors.map(a => a.split("<").at(0).trim()),
@@ -22,18 +18,6 @@
 
 // the scope for evaluating expressions and documentation
 #let scope = (crudo: crudo)
-// https://github.com/Mc-Zen/tidy/issues/21
-#let preamble = "set raw(block: false, lang: none);"
-#let example = (..args) => {
-  // breakable blocks don't work
-  show: block.with(breakable: false)
-  tidy.styles.minimal.show-example(
-    inherited-scope: scope,
-    preamble: preamble,
-    ..args
-  )
-}
-#scope.insert("example", example)
 
 = Introduction
 
@@ -51,18 +35,9 @@ All functions that accept raw elements as parameters alternatively accept simple
 
 = Module reference
 
-== `crudo`
-
-#{
-  let module = tidy.parse-module(
-    read("/src/lib.typ"),
-    // label-prefix: "crudo.",
-    scope: scope,
-    preamble: preamble,
-  )
-  tidy.show-module(
-    module,
-    sort-functions: none,
-    style: tidy.styles.minimal,
-  )
-}
+#module(
+  read("/src/lib.typ"),
+  name: "crudo",
+  label-prefix: none,
+  scope: scope,
+)

@@ -4,7 +4,7 @@
 // #import "/src/lib.typ"
 #import "@preview/crudo:0.1.0"
 
-#import "@preview/codly:0.2.1": *
+#import "@preview/codly:1.0.0": *
 
 #set page(width: 10cm, height: auto, margin: 5mm)
 
