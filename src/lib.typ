@@ -1,3 +1,5 @@
+#let _read = read
+
 /// _raw-to-lines_: extract lines and properties from a `raw` element.
 ///
 /// #example(ratio: 1.1, scale-preview: 100%, ````
@@ -90,6 +92,35 @@
   let (lines, fields) = r2l(raw-block)
   lines = mapper(lines)
   l2r(lines, ..fields)
+}
+
+/// A wrapper around the built-in #link("https://typst.app/docs/reference/data-loading/read/")[`read()`]
+/// function that returns the file contents as a raw element. Since code files often have a trailing
+/// newline by convention, this function can optionally trim the file contents (and trims the end by
+/// default).
+///
+/// - properties (dict): properties for constructing the new `raw` element, given as a dictionary
+///   instead as direct arguments since the latter is sed for the `read()` parameters
+/// - trim (boolean, alignment): one of `true`, `false`, `start`, `end` to determine whether and
+///   what to #link("https://typst.app/docs/reference/foundations/str/#definitions-trim-parameters-at")[`trim()`]
+///   from the read file
+/// - ..args (arguments): the parameters to #link("https://typst.app/docs/reference/data-loading/read/")[`read()`],
+///   i.e. file name and encoding
+/// -> content
+#let read(
+  properties: (:),
+  trim: end,
+  ..args
+) = {
+  assert(trim in (true, false, start, end), message: "invalid value for trim")
+
+  let text = _read(..args)
+  if trim == true {
+    text = text.trim()
+  } else if trim != false {
+    text = text.trim(at: trim)
+  }
+  raw(text, ..properties)
 }
 
 /// Maps individual lines of a raw element and creates a new one with the lines. All properties of

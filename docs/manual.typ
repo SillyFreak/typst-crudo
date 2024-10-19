@@ -27,6 +27,7 @@ While a package can't add methods such as `raw.slice()` to an element, we can at
 
 - #ref-fn("r2l()") and #ref-fn("l2r()") are the building blocks the others build on: _raw-to-lines_ and _lines-to-raw_ conversions.
 - #ref-fn("transform()") is one layer above and allows arbitrarily transforming an array of strings.
+- #ref-fn("read()") reads a text file and puts it in a raw element with the provided `raw` properties.
 - #ref-fn("map()"), #ref-fn("filter()") and #ref-fn("slice()") are analogous to their `array` counterparts.
 - #ref-fn("lines()") is similar to `slice()` but allows more advanced line selections in a single step.
 - #ref-fn("join()") combines multiple `raw` elements and is convenient e.g. to add preambles to code snippets.

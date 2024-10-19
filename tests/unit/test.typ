@@ -44,6 +44,14 @@
 )
 
 #assert.eq(
+  crudo.read(
+    properties: (block: true, lang: "md"),
+    "example.md",
+  ),
+  raw("\n# Example\n\nLorem ipsum.", block: true, lang: "md"),
+)
+
+#assert.eq(
   crudo.transform(
     ```typc
     let foo() = {
