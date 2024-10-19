@@ -14,7 +14,7 @@ repository = "https://github.com/SillyFreak/typst-crudo"
 keywords = ["raw", "code", "block"]
 categories = ["text", "scripting", "utility"]
 disciplines = []
-compiler = "0.9.0"
+compiler = "0.10.0"
 exclude = [
 	".github",
 	"docs",
