@@ -52,6 +52,20 @@
 )
 
 #assert.eq(
+  crudo.transform-text(
+    ```typc
+
+    let foo() = {
+      // some comment
+      ... do something ...
+    }
+    ```,
+    str.trim
+  ),
+  raw("let foo() = {\n  // some comment\n  ... do something ...\n}", block: true, lang: "typc"),
+)
+
+#assert.eq(
   crudo.transform(
     ```typc
     let foo() = {

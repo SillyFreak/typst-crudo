@@ -67,6 +67,35 @@
   raw(lines.join("\n"), ..properties)
 }
 
+/// Transforms the text of a raw element and creates a new one with the new text. All properties of
+/// the element (e.g. `block` and `lang`) are preserved.
+///
+/// #block(breakable: false, example(ratio: 1.1, scale-preview: 100%, ````
+/// crudo.transform-text(
+///   ```typc
+///
+///   let foo() = {
+///     // some comment
+///     ... do something ...
+///   }
+///   ```,
+///   str.trim
+/// )
+/// ````))
+///
+/// - raw-block (content, str): a single `raw` element or (multi line) string
+/// - mapper (function): a function that takes a single string and returns a new one
+/// -> content
+#let transform-text(raw-block, mapper) = {
+  let (text, ..fields) = if type(raw-block) == str {
+    (text: raw-block)
+  } else {
+    raw-block.fields()
+  }
+  text = mapper(text)
+  raw(text, ..fields)
+}
+
 /// Transforms all lines of a raw element and creates a new one with the lines. All properties of
 /// the element (e.g. `block` and `lang`) are preserved.
 ///
