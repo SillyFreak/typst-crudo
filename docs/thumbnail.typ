@@ -1,12 +1,15 @@
-// make the PDF reproducible to ease version control
-#set document(date: none)
+#import "/src/lib.typ" as crudo
 
-// #import "/src/lib.typ"
-#import "@preview/crudo:0.1.1"
+#import "@preview/codly:1.2.0": *
 
-#import "@preview/codly:1.0.0": *
+#set page(height: auto, margin: 5mm, fill: none)
 
-#set page(width: 10cm, height: auto, margin: 5mm)
+// style thumbnail for light and dark theme
+// #let theme = sys.inputs.at("theme", default: "light")
+// #set text(white) if theme == "dark"
+#set page(fill: auto)
+
+#set text(22pt)
 
 #show: codly-init
 #codly()

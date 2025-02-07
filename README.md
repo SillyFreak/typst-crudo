@@ -11,7 +11,7 @@ While transforming the content, the original [parameters](https://typst.app/docs
 
 ## Getting Started
 
-The full version of this example can be found in [gallery/thumbnail.typ](gallery/thumbnail.typ).
+The full version of this example can be found in [docs/thumbnail.typ](docs/thumbnail.typ).
 
 `````typ
 From
@@ -43,7 +43,10 @@ If you execute that, you get
 #eval(full-example.text, mode: "markup")
 `````
 
-![Example](./thumbnail.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./thumbnail-dark.svg">
+  <img src="./thumbnail-light.svg">
+</picture>
 
 ## Usage
 

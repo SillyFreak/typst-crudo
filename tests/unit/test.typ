@@ -1,8 +1,5 @@
 #import "/src/lib.typ" as crudo
 
-// the output is not relevant for this test
-#set page(width: 0pt, height: 0pt)
-
 #assert.eq(
   crudo.r2l(```txt
   first line
