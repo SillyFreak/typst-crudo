@@ -39,3 +39,8 @@ All functions that accept raw elements as parameters alternatively accept simple
   name: none,
   label-prefix: none,
 )
+
+#module(
+  read("/src/regions.typ"),
+  name: "regions",
+)
