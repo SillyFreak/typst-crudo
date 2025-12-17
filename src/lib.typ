@@ -1,5 +1,3 @@
-#let _read = read
-
 /// _raw-to-lines_: extract lines and properties from a `raw` element.
 ///
 /// #example(ratio: 1.1, scale-preview: 100%, ````typc
@@ -164,7 +162,7 @@
 ) = {
   assert(trim in (true, false, start, end), message: "invalid value for trim")
 
-  let text = _read(..args)
+  let text = std.read(..args)
   if trim == true {
     text = text.trim()
   } else if trim != false {
