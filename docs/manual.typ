@@ -1,23 +1,21 @@
 #import "template.typ" as template: *
 #import "/src/lib.typ" as crudo
 
-#let package-meta = toml("/typst.toml").package
-#let date = datetime(year: 2024, month: 9, day: 28)
-
 #show: manual(
+  package-meta: toml("/typst.toml").package,
   title: "Crudo",
-  // subtitle: "...",
-  authors: package-meta.authors.map(a => a.split("<").at(0).trim()),
-  abstract: [
+  subtitle: [
     _Crudo_ lets you take slices from raw blocks and more: slice, filter, transform and join the lines of raw blocks.
   ],
-  url: package-meta.repository,
-  version: package-meta.version,
-  date: date,
-)
+  date: datetime(year: 2024, month: 9, day: 28),
 
-// the scope for evaluating expressions and documentation
-#let scope = (crudo: crudo)
+  // logo: rect(width: 5cm, height: 5cm),
+  // abstract: [
+  //   A PACKAGE for something
+  // ],
+
+  scope: (crudo: crudo),
+)
 
 = Introduction
 
@@ -38,7 +36,6 @@ All functions that accept raw elements as parameters alternatively accept simple
 
 #module(
   read("/src/lib.typ"),
-  name: "crudo",
+  name: none,
   label-prefix: none,
-  scope: scope,
 )

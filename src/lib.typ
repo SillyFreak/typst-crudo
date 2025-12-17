@@ -2,7 +2,7 @@
 
 /// _raw-to-lines_: extract lines and properties from a `raw` element.
 ///
-/// #example(ratio: 1.1, scale-preview: 100%, ````
+/// #example(ratio: 1.1, scale-preview: 100%, ````typc
 /// crudo.r2l(```txt
 /// first line
 /// second line
@@ -12,7 +12,7 @@
 /// Note that even though you will usually want to use this on raw _blocks_, this is not a
 /// necessity:
 ///
-/// #example(ratio: 1.1, scale-preview: 100%, ````
+/// #example(ratio: 1.1, scale-preview: 100%, ````typc
 /// crudo.r2l(
 ///   raw("first line\nsecond line")
 /// )
@@ -21,13 +21,16 @@
 /// For flexibility, regular strings are also supported. Strings don't have a language and aren't
 /// blocks:
 ///
-/// #example(ratio: 1.1, scale-preview: 100%, ````
+/// #example(ratio: 1.1, scale-preview: 100%, ````typc
 /// crudo.r2l("first line\nsecond line")
 /// ````)
 ///
-/// - raw-block (content, str): a single `raw` element or (multi line) string
 /// -> array
-#let r2l(raw-block) = {
+#let r2l(
+  /// a single `raw` element or (multi line) string
+  /// -> content | str
+  raw-block,
+) = {
   assert(
     type(raw-block) == str or (type(raw-block) == content and raw-block.func() == raw),
     message: "parameter to r2l must be a raw element or a string",
@@ -44,7 +47,7 @@
 /// _lines-to-raw_: convert lines into a `raw` element. Properties for the created element can be
 /// passed as parameters.
 ///
-/// #example(ratio: 1.1, scale-preview: 100%, ````
+/// #example(ratio: 1.1, scale-preview: 100%, ````typc
 /// crudo.l2r(
 ///   ("first line", "second line")
 /// )
@@ -53,24 +56,29 @@
 /// Note that even though you will usually want to construct raw _blocks_, this is not assumed. To
 /// create blocks, pass the appropriate parameter:
 ///
-/// #example(ratio: 1.1, scale-preview: 100%, ````
+/// #example(ratio: 1.1, scale-preview: 100%, ````typc
 /// crudo.l2r(
 ///   ("first line", "second line"),
 ///   block: true,
 /// )
 /// ````)
 ///
-/// - lines (array): an array of strings
-/// - ..properties (arguments): properties for constructing the new `raw` element
 /// -> content
-#let l2r(lines, ..properties) = {
+#let l2r(
+  /// an array of strings
+  /// -> array
+  lines,
+  /// properties for constructing the new `raw` element
+  /// -> arguments
+  ..properties,
+) = {
   raw(lines.join("\n"), ..properties)
 }
 
 /// Transforms the text of a raw element and creates a new one with the new text. All properties of
 /// the element (e.g. `block` and `lang`) are preserved.
 ///
-/// #block(breakable: false, example(ratio: 1.1, scale-preview: 100%, ````
+/// #block(breakable: false, example(ratio: 1.1, scale-preview: 100%, ````typc
 /// crudo.transform-text(
 ///   ```typc
 ///
@@ -83,10 +91,15 @@
 /// )
 /// ````))
 ///
-/// - raw-block (content, str): a single `raw` element or (multi line) string
-/// - mapper (function): a function that takes a single string and returns a new one
 /// -> content
-#let transform-text(raw-block, mapper) = {
+#let transform-text(
+  /// a single `raw` element or (multi line) string
+  /// -> content | str
+  raw-block,
+  /// a function that takes a single string and returns a new one
+  /// -> function
+  mapper,
+) = {
   let (text, ..fields) = if type(raw-block) == str {
     (text: raw-block)
   } else {
@@ -99,7 +112,7 @@
 /// Transforms all lines of a raw element and creates a new one with the lines. All properties of
 /// the element (e.g. `block` and `lang`) are preserved.
 ///
-/// #example(ratio: 1.1, scale-preview: 100%, ````
+/// #example(ratio: 1.1, scale-preview: 100%, ````typc
 /// crudo.transform(
 ///   ```typc
 ///   let foo() = {
@@ -114,10 +127,15 @@
 /// )
 /// ````)
 ///
-/// - raw-block (content, str): a single `raw` element or (multi line) string
-/// - mapper (function): a function that takes an array of strings and returns a new one
 /// -> content
-#let transform(raw-block, mapper) = {
+#let transform(
+  /// a single `raw` element or (multi line) string
+  /// -> content | str
+  raw-block,
+  /// a function that takes an array of strings and returns a new one
+  /// -> function
+  mapper,
+) = {
   let (lines, fields) = r2l(raw-block)
   lines = mapper(lines)
   l2r(lines, ..fields)
@@ -128,17 +146,20 @@
 /// newline by convention, this function can optionally trim the file contents (and trims the end by
 /// default).
 ///
-/// - properties (dict): properties for constructing the new `raw` element, given as a dictionary
-///   instead as direct arguments since the latter is sed for the `read()` parameters
-/// - trim (boolean, alignment): one of `true`, `false`, `start`, `end` to determine whether and
-///   what to #link("https://typst.app/docs/reference/foundations/str/#definitions-trim-parameters-at")[`trim()`]
-///   from the read file
-/// - ..args (arguments): the parameters to #link("https://typst.app/docs/reference/data-loading/read/")[`read()`],
-///   i.e. file name and encoding
 /// -> content
 #let read(
+  /// properties for constructing the new `raw` element, given as a dictionary instead of direct
+  /// arguments since the latter is used for the `read()` parameters
+  /// -> dictionary
   properties: (:),
+  /// one of `true`, `false`, `start`, `end` to determine whether and what to
+  /// #link("https://typst.app/docs/reference/foundations/str/#definitions-trim-parameters-at")[`trim()`]
+  /// from the read file
+  /// -> boolean | alignment
   trim: end,
+  /// the parameters to #link("https://typst.app/docs/reference/data-loading/read/")[`read()`], i.e.
+  /// file name and encoding
+  /// -> arguments
   ..args
 ) = {
   assert(trim in (true, false, start, end), message: "invalid value for trim")
@@ -155,7 +176,7 @@
 /// Maps individual lines of a raw element and creates a new one with the lines. All properties of
 /// the element (e.g. `block` and `lang`) are preserved.
 ///
-/// #example(ratio: 1.1, scale-preview: 100%, ````
+/// #example(ratio: 1.1, scale-preview: 100%, ````typc
 /// crudo.map(
 ///   ```typc
 ///   let foo() = {
@@ -167,17 +188,22 @@
 /// )
 /// ````)
 ///
-/// - raw-block (content, str): a single `raw` element or (multi line) string
-/// - mapper (function): a function that takes a string and returns a new one
 /// -> content
-#let map(raw-block, mapper) = {
+#let map(
+  /// a single `raw` element or (multi line) string
+  /// -> content | str
+  raw-block,
+  /// a function that takes a string and returns a new one
+  /// -> function
+  mapper,
+) = {
   transform(raw-block, lines => lines.map(mapper))
 }
 
 /// Filters lines of a raw element and creates a new one with the lines. All properties of the
 /// element (e.g. `block` and `lang`) are preserved.
 ///
-/// #example(ratio: 1.1, scale-preview: 100%, ````
+/// #example(ratio: 1.1, scale-preview: 100%, ````typc
 /// crudo.filter(
 ///   ```typc
 ///   let foo() = {
@@ -189,17 +215,22 @@
 /// )
 /// ````)
 ///
-/// - raw-block (content, str): a single `raw` element or (multi line) string
-/// - test (function): a function that takes a string and returns a new one
 /// -> content
-#let filter(raw-block, test) = {
+#let filter(
+  /// a single `raw` element or (multi line) string
+  /// -> content | str
+  raw-block,
+  /// a function that takes a string and returns a new one
+  /// -> function
+  test,
+) = {
   transform(raw-block, lines => lines.filter(test))
 }
 
 /// Slices lines of a raw element and creates a new one with the lines. All properties of the
 /// element (e.g. `block` and `lang`) are preserved.
 ///
-/// #example(ratio: 1.1, scale-preview: 100%, ````
+/// #example(ratio: 1.1, scale-preview: 100%, ````typc
 /// crudo.slice(
 ///   ```typc
 ///   let foo() = {
@@ -211,11 +242,16 @@
 /// )
 /// ````)
 ///
-/// - raw-block (content, str): a single `raw` element or (multi line) string
-/// - ..args (arguments): the same arguments as accepted by
-///   #link("https://typst.app/docs/reference/foundations/array/#definitions-slice")[`array.slice()`]
 /// -> content
-#let slice(raw-block, ..args) = {
+#let slice(
+  /// a single `raw` element or (multi line) string
+  /// -> content | str
+  raw-block,
+  /// the same arguments as accepted by
+  /// #link("https://typst.app/docs/reference/foundations/array/#definitions-slice")[`array.slice()`]
+  /// -> arguments
+  ..args,
+) = {
   transform(raw-block, lines => lines.slice(..args))
 }
 
@@ -237,7 +273,7 @@
 /// All three kinds of parameters can be mixed, and lines can be selected any number of times and in
 /// any order.
 ///
-/// #example(ratio: 1.1, scale-preview: 100%, ````
+/// #example(ratio: 1.1, scale-preview: 100%, ````typc
 /// crudo.lines(
 ///   ```typc
 ///   let foo() = {
@@ -250,12 +286,18 @@
 /// )
 /// ````)
 ///
-/// - raw-block (content, str): a single `raw` element or (multi line) string
-/// - ..line-numbers (arguments): any number of line number specifiers, as described above
-/// - zero-based (boolean): whether the supplied numbers are one-based line numbers or zero-based
-///   indices
 /// -> content
-#let lines(raw-block, ..line-numbers, zero-based: false) = {
+#let lines(
+  /// a single `raw` element or (multi line) string
+  /// -> content | str
+  raw-block,
+  /// any number of line number specifiers, as described above
+  /// -> arguments
+  ..line-numbers,
+  /// whether the supplied numbers are one-based line numbers or zero-based indices
+  /// -> boolean
+  zero-based: false,
+) = {
   assert(line-numbers.named().len() == 0, message: "only positional arguments can be given")
   let line-numbers = line-numbers.pos()
 
@@ -300,7 +342,7 @@
 /// Joins lines of multiple raw elements and creates a new one with the lines. All properties of the
 /// `main` element (e.g. `block` and `lang`) are preserved.
 ///
-/// #example(ratio: 1.1, scale-preview: 100%, ````
+/// #example(ratio: 1.1, scale-preview: 100%, ````typc
 /// crudo.join(
 ///   ```java
 ///   let foo() = {
@@ -320,7 +362,7 @@
 ///
 /// String parameters are allowed; the `main` parameter defaults to the first raw block:
 ///
-/// #example(ratio: 1.1, scale-preview: 100%, ````
+/// #example(ratio: 1.1, scale-preview: 100%, ````typc
 /// crudo.join(
 ///   "// these strings don't",
 ///   "// determine the properties",

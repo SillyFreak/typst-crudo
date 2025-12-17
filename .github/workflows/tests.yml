@@ -17,6 +17,8 @@ jobs:
             tytanic: 0.1
           - typst: 0.13
             tytanic: 0.2
+          - typst: 0.14
+            tytanic: 0.3
             # the docs don't need to build with all versions supported by the package;
             # the latest one is enough
             doc: true
@@ -28,14 +30,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install just and tytanic
+      - name: Install just
         uses: taiki-e/install-action@v2
         with:
-          tool: just,tytanic@${{ matrix.typst-version.tytanic }}
+          tool: just
+
+      - name: Install tytanic
+        uses: typst-community/setup-tytanic@v1
+        with:
+          tytanic-version: ${{ matrix.typst-version.tytanic }}
 
       - name: Setup typst
         id: setup-typst
-        uses: typst-community/setup-typst@v3
+        uses: typst-community/setup-typst@v4
         with:
           typst-version: ${{ matrix.typst-version.typst }}
 

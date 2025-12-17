@@ -25,7 +25,7 @@ jobs:
           tool: just
 
       - name: Setup typst
-        uses: typst-community/setup-typst@v3
+        uses: typst-community/setup-typst@v4
         with:
           typst-version: latest
 
@@ -54,6 +54,7 @@ jobs:
           repository: ${{ env.REGISTRY_REPO }}
           token: ${{ secrets.REGISTRY_TOKEN }}
           path: typst-packages
+          sparse-checkout: ${{ env.PATH_PREFIX }}/${{ env.PKG_NAME }}/${{ env.PKG_VERSION }}
 
       - name: Release package
         run: |

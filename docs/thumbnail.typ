@@ -1,6 +1,6 @@
 #import "/src/lib.typ" as crudo
 
-#import "@preview/codly:1.2.0": *
+#import "@preview/codly:1.3.0": *
 
 #set page(height: auto, margin: 5mm, fill: none)
 
