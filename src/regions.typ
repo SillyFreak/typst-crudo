@@ -21,6 +21,21 @@
     regions = (regions,)
   }
 
+  let (regions, excluded-regions) = if regions == none {
+    // all  included, no exclusions
+    (none, ())
+  } else {
+    let excluded-regions = regions.filter(x => x.starts-with("!")).map(x => x.slice(1))
+    if regions.len() == excluded-regions.len() {
+      // only exclusions, so include all
+      (none, excluded-regions)
+    } else {
+      // both inclusions and exclusions
+      let regions = regions.filter(x => not x.starts-with("!"))
+      (regions, excluded-regions)
+    }
+  }
+
   let ranges = ()
   let current-regions = ()
   let current-start = -1
@@ -49,7 +64,9 @@
       current-start = -1
     } else if current-start == -1 {
       // check if we're in a range that we're interested in
-      if regions == none or regions.any(x => x in current-regions) {
+      let is-included = regions == none or regions.any(x => x in current-regions)
+      let is-excluded = excluded-regions.any(x => x in current-regions)
+      if is-included and not is-excluded {
         current-start = index
       } else {
         // no; don't check until the next indicator

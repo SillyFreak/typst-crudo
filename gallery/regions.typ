@@ -67,3 +67,20 @@
   zebraw-args: (line-range: lines),
   codly-args: (ranges: lines.map(((a, b)) => (a, b - 1))),
 )
+
+#pagebreak()
+
+#let lines = regions.ranges(ex-java, "!mutators")
+#lines
+
+#example(
+  crudo.lines(ex-java, ..lines.map(((a, b)) => range(a, b)))
+)
+
+#pagebreak()
+
+#example(
+  ex-java,
+  zebraw-args: (line-range: lines),
+  codly-args: (ranges: lines.map(((a, b)) => (a, b - 1))),
+)
