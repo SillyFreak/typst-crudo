@@ -36,11 +36,12 @@
 
 #pagebreak()
 
-#let lines = regions.ranges(ex-java, none)
+#let ranges = none
+#let lines = regions.ranges(ex-java, ranges)
 #lines
 
 #example(
-  crudo.lines(ex-java, ..lines.map(((a, b)) => range(a, b)))
+  regions.extract(ex-java, ranges)
 )
 
 #pagebreak()
@@ -53,11 +54,12 @@
 
 #pagebreak()
 
-#let lines = regions.ranges(ex-java, "basics")
+#let ranges = "basics"
+#let lines = regions.ranges(ex-java, ranges)
 #lines
 
 #example(
-  crudo.lines(ex-java, ..lines.map(((a, b)) => range(a, b)))
+  regions.extract(ex-java, ranges)
 )
 
 #pagebreak()
@@ -70,11 +72,12 @@
 
 #pagebreak()
 
-#let lines = regions.ranges(ex-java, "!mutators")
+#let ranges = "!mutators"
+#let lines = regions.ranges(ex-java, ranges)
 #lines
 
 #example(
-  crudo.lines(ex-java, ..lines.map(((a, b)) => range(a, b)))
+  regions.extract(ex-java, ranges)
 )
 
 #pagebreak()
@@ -87,11 +90,12 @@
 
 #pagebreak()
 
-#let lines = regions.ranges(ex-java, ("all", "!mutators"))
+#let ranges = ("all", "!mutators")
+#let lines = regions.ranges(ex-java, ranges)
 #lines
 
 #example(
-  crudo.lines(ex-java, ..lines.map(((a, b)) => range(a, b)))
+  regions.extract(ex-java, ranges)
 )
 
 #pagebreak()

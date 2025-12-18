@@ -88,3 +88,16 @@
 
   ranges
 }
+
+#let extract(
+  /// a single `raw` element or (multi line) string
+  /// -> content | str
+  raw-block,
+  /// a single or array of region names, or `none` to get all lines that don't indicate regions
+  /// -> none | str | array
+  regions,
+) = {
+  import "lib.typ": lines
+
+  lines(raw-block, ..ranges(raw-block, regions).map(((a, b)) => range(a, b)))
+}
