@@ -25,6 +25,8 @@
     // all  included, no exclusions
     (none, ())
   } else {
+    assert(regions.all(x => x.match(regex(`^!?\w+$`.text)) != none), message: "regions must consist of word characters")
+
     let excluded-regions = regions.filter(x => x.starts-with("!")).map(x => x.slice(1))
     if regions.len() == excluded-regions.len() {
       // only exclusions, so include all
