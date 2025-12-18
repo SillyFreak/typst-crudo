@@ -1,7 +1,7 @@
 #import "@preview/codly:1.3.0"
 #import "@local/zebraw:0.6.1"
 
-#import "/src/lib.typ" as crudo: regions
+#import "/src/lib.typ" as crudo: history
 
 #set page(height: auto, margin: 1cm)
 #show raw.where(block: true): set text(0.9em)
@@ -30,18 +30,19 @@
   ],
 )
 
-#let ex-java = crudo.read("RegionsExample.java", properties: (block: true, lang: "java"))
+#let ex-java = crudo.read("HistoryExample.java", properties: (block: true, lang: "java"))
 
 #example(ex-java)
 
 #pagebreak()
 
-#let ranges = none
-#let lines = regions.ranges(ex-java, ranges)
+#let current = "basics"
+#let _history = ("basics", "mutators")
+#let lines = history.ranges(ex-java, current, _history)
 #lines
 
 #example(
-  regions.extract(ex-java, ranges)
+  history.extract(ex-java, current, _history)
 )
 
 #pagebreak()
@@ -54,48 +55,13 @@
 
 #pagebreak()
 
-#let ranges = "basics"
-#let lines = regions.ranges(ex-java, ranges)
+#let current = "mutators"
+#let _history = ("basics", "mutators")
+#let lines = history.ranges(ex-java, current, _history)
 #lines
 
 #example(
-  regions.extract(ex-java, ranges)
-)
-
-#pagebreak()
-
-#example(
-  ex-java,
-  zebraw-args: (line-range: lines),
-  codly-args: (ranges: lines.map(((a, b)) => (a, b - 1))),
-)
-
-#pagebreak()
-
-#let ranges = "!mutators"
-#let lines = regions.ranges(ex-java, ranges)
-#lines
-
-#example(
-  regions.extract(ex-java, ranges)
-)
-
-#pagebreak()
-
-#example(
-  ex-java,
-  zebraw-args: (line-range: lines),
-  codly-args: (ranges: lines.map(((a, b)) => (a, b - 1))),
-)
-
-#pagebreak()
-
-#let ranges = ("all", "!mutators")
-#let lines = regions.ranges(ex-java, ranges)
-#lines
-
-#example(
-  regions.extract(ex-java, ranges)
+  history.extract(ex-java, current, _history)
 )
 
 #pagebreak()

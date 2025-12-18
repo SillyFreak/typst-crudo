@@ -44,3 +44,8 @@ All functions that accept raw elements as parameters alternatively accept simple
   read("/src/regions.typ"),
   name: "regions",
 )
+
+#module(
+  read("/src/history.typ"),
+  name: "history",
+)
