@@ -1,4 +1,4 @@
-// @region start:basics
+// @region start:all start:basics
 public class Account {
 	private double balance;
 
@@ -24,5 +24,5 @@ public class Account {
 		return this.balance;
 	}
 }
-// @region end:basics
+// @region end:basics end:all
 // extra
