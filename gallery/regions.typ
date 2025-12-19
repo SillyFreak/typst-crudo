@@ -40,16 +40,27 @@
 #let lines = regions.ranges(ex-java, ranges)
 #lines
 
+#let highlights = ((10, 13), (23, 26))
+#let highlight-lines = regions.ranges-within(lines, highlights).map(((a, b)) => range(a, b)).join()
 #example(
-  regions.extract(ex-java, ranges)
+  regions.extract(ex-java, ranges),
+  zebraw-args: (highlight-lines: highlight-lines),
+  codly-args: (highlighted-lines: highlight-lines),
 )
 
 #pagebreak()
 
+#let highlight-lines = highlights.map(((a, b)) => range(a, b)).join()
 #example(
   ex-java,
-  zebraw-args: (line-range: lines),
-  codly-args: (ranges: lines.map(((a, b)) => (a, b - 1))),
+  zebraw-args: (
+    line-range: lines,
+    highlight-lines: highlight-lines,
+  ),
+  codly-args: (
+    ranges: lines.map(((a, b)) => (a, b - 1)),
+    highlighted-lines: highlight-lines,
+  ),
 )
 
 #pagebreak()

@@ -101,3 +101,49 @@
 
   lines(raw-block, ..ranges(raw-block, regions).map(((a, b)) => range(a, b)))
 }
+
+#let ranges-within(
+  outer-ranges,
+  inner-ranges,
+) = {
+  assert(
+    type(outer-ranges) == array and outer-ranges.all(x => type(x) == array and x.len() == 2 and x.all(x => type(x) == int)),
+    message: "outer-ranges must be an array of pairs of ints",
+  )
+  assert(
+    type(inner-ranges) == array and inner-ranges.all(x => type(x) == array and x.len() == 2 and x.all(x => type(x) == int)),
+    message: "inner-ranges must be an array of pairs of ints",
+  )
+
+  let ranges = ()
+  let outer-i = 0
+  // if we e.g. start with outer range (2, 5), then 2 lines have already been skipped
+  // subtract 1 since we use 1-based indices
+  let skipped-lines = outer-ranges.first().first() - 1
+  for (inner-a, inner-b) in inner-ranges {
+    let (outer-a, outer-b) = outer-ranges.at(outer-i)
+
+    while inner-a >= outer-b {
+      // the inner range is in a subsequent outer range
+      outer-i += 1
+      assert(outer-i < outer-ranges.len(), message: "inner ranges can't lie beyond the last outer range")
+      let old-outer-b = outer-b
+      (outer-a, outer-b) = outer-ranges.at(outer-i)
+      skipped-lines += outer-a - old-outer-b
+    }
+
+    // now we're in the right range. the outer range must fully contain the inner one:
+    // if there was an indicator that interrupted the outer range, it must also have interrupted the inner range
+    assert(inner-b <= outer-b, message: "each inner range must be fully contained in one outer range")
+    inner-a -= skipped-lines
+    inner-b -= skipped-lines
+    if ranges.len() != 0 and ranges.last().last() == inner-a {
+      // after removing skipped lines, the new range joins with the previous one
+      ranges.last().last() = inner-b
+    } else {
+      ranges.push((inner-a, inner-b))
+    }
+  }
+
+  ranges
+}
