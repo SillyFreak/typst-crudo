@@ -8,7 +8,14 @@ public class Account {
 
 // @start:mutators
 	public void deposit(double amount) {
+/* @before:synchronized
 		this.balance += amount;
+ */
+// @start:synchronized
+		synchronized(this) {
+			this.balance += amount;
+		}
+// @end:synchronized
 	}
 
 	public boolean withdraw(double amount) {

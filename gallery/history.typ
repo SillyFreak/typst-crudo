@@ -36,8 +36,8 @@
 
 #pagebreak()
 
+#let _history = ("basics", "mutators", "synchronized")
 #let current = "basics"
-#let _history = ("basics", "mutators")
 #let lines = history.ranges(ex-java, current, _history)
 #lines
 
@@ -56,7 +56,24 @@
 #pagebreak()
 
 #let current = "mutators"
-#let _history = ("basics", "mutators")
+#let lines = history.ranges(ex-java, current, _history)
+#lines
+
+#example(
+  history.extract(ex-java, current, _history)
+)
+
+#pagebreak()
+
+#example(
+  ex-java,
+  zebraw-args: (line-range: lines),
+  codly-args: (ranges: lines.map(((a, b)) => (a, b - 1))),
+)
+
+#pagebreak()
+
+#let current = "synchronized"
 #let lines = history.ranges(ex-java, current, _history)
 #lines
 

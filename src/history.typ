@@ -26,8 +26,22 @@
   let ranges = ()
   let current-regions = ()
   let current-start = -1
+  let only-before = none
   for (index, line) in lines.enumerate(start: 1) {
-    let indicator = line.match(regex(`^\s*//\s*@(start|end):(\w+)$`.text))
+    let indicator = line.match(regex(
+      `^\s*//\s*@(start|end):(\w+)\s*$`.text + "|" +
+      `^\s*/\*\s*@before:(\w+)\s*$`.text + "|" +
+      `^\s*\*/\s*$`.text))
+
+    let indicator = if indicator != none {
+      if indicator.captures.at(0) != none {
+        ("regular", ..indicator.captures.slice(0, 2))
+      } else if indicator.captures.at(2) != none {
+        ("before", "start", ..indicator.captures.slice(2, 3))
+      } else if only-before != none {
+        ("before", "end")
+      }
+    }
     if indicator != none {
       if current-start not in (none, -1) {
         // the region is ending or interrupted; push a range
@@ -36,20 +50,33 @@
       }
 
       // update the list of current ranges
-      let (kind, name) = indicator.captures
-      if kind == "start" {
+      let (kind, pos, ..data) = indicator
+      if (kind, pos) == ("regular", "start") {
+        let (name,) = data
         assert(name not in current-regions, message: "can't start already open region: " + name)
         current-regions.push(name)
-      } else {
+      } else if (kind, pos) == ("regular", "end") {
+        let (name,) = data
         assert(current-regions.last() == name, message: "can't end non-current region: " + name)
         _ = current-regions.pop()
+      } else if (kind, pos) == ("before", "start") {
+        let (name,) = data
+        only-before = name
+      } else if (kind, pos) == ("before", "end") {
+        only-before = none
+      } else {
+        panic()
       }
 
       // indicate that we hit an indicator and a new range may start
       current-start = -1
     } else if current-start == -1 {
       // check if we're in a range that we're interested in
-      if current-regions.len() != 0 and current-regions.last() in past {
+      if (
+        current-regions.len() != 0 and
+        current-regions.last() in past and
+        (only-before == none or not only-before in past)
+      ) {
         current-start = index
       } else {
         // no; don't check until the next indicator
