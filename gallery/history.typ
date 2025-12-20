@@ -41,16 +41,27 @@
 #let lines = history.ranges(ex-java, current, _history)
 #lines
 
+#let highlights = ((10, 20), (30, 33))
+#let highlight-lines = history.ranges-within(lines, highlights).map(((a, b)) => range(a, b)).join()
 #example(
-  history.extract(ex-java, current, _history)
+  history.extract(ex-java, current, _history),
+  zebraw-args: (highlight-lines: highlight-lines),
+  codly-args: (highlighted-lines: highlight-lines),
 )
 
 #pagebreak()
 
+#let highlight-lines = highlights.map(((a, b)) => range(a, b)).join()
 #example(
   ex-java,
-  zebraw-args: (line-range: lines),
-  codly-args: (ranges: lines.map(((a, b)) => (a, b - 1))),
+  zebraw-args: (
+    line-range: lines,
+    highlight-lines: highlight-lines,
+  ),
+  codly-args: (
+    ranges: lines.map(((a, b)) => (a, b - 1)),
+    highlighted-lines: highlight-lines,
+  ),
 )
 
 #pagebreak()
@@ -59,16 +70,26 @@
 #let lines = history.ranges(ex-java, current, _history)
 #lines
 
+#let highlight-lines = history.ranges-within(lines, highlights).map(((a, b)) => range(a, b)).join()
 #example(
-  history.extract(ex-java, current, _history)
+  history.extract(ex-java, current, _history),
+  zebraw-args: (highlight-lines: highlight-lines),
+  codly-args: (highlighted-lines: highlight-lines),
 )
 
 #pagebreak()
 
+#let highlight-lines = highlights.map(((a, b)) => range(a, b)).join()
 #example(
   ex-java,
-  zebraw-args: (line-range: lines),
-  codly-args: (ranges: lines.map(((a, b)) => (a, b - 1))),
+  zebraw-args: (
+    line-range: lines,
+    highlight-lines: highlight-lines,
+  ),
+  codly-args: (
+    ranges: lines.map(((a, b)) => (a, b - 1)),
+    highlighted-lines: highlight-lines,
+  ),
 )
 
 #pagebreak()
@@ -77,14 +98,24 @@
 #let lines = history.ranges(ex-java, current, _history)
 #lines
 
+#let highlight-lines = history.ranges-within(lines, highlights).map(((a, b)) => range(a, b)).join()
 #example(
-  history.extract(ex-java, current, _history)
+  history.extract(ex-java, current, _history),
+  zebraw-args: (highlight-lines: highlight-lines),
+  codly-args: (highlighted-lines: highlight-lines),
 )
 
 #pagebreak()
 
+#let highlight-lines = highlights.map(((a, b)) => range(a, b)).join()
 #example(
   ex-java,
-  zebraw-args: (line-range: lines),
-  codly-args: (ranges: lines.map(((a, b)) => (a, b - 1))),
+  zebraw-args: (
+    line-range: lines,
+    highlight-lines: highlight-lines,
+  ),
+  codly-args: (
+    ranges: lines.map(((a, b)) => (a, b - 1)),
+    highlighted-lines: highlight-lines,
+  ),
 )

@@ -107,3 +107,5 @@
 
   lines(raw-block, ..ranges(raw-block, current, history).map(((a, b)) => range(a, b)))
 }
+
+#import "regions.typ": ranges-within

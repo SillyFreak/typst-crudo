@@ -116,32 +116,51 @@
   )
 
   let ranges = ()
+  let inner-i = 0
   let outer-i = 0
   // if we e.g. start with outer range (2, 5), then 2 lines have already been skipped
   // subtract 1 since we use 1-based indices
   let skipped-lines = outer-ranges.first().first() - 1
-  for (inner-a, inner-b) in inner-ranges {
+  while true {
+    let (inner-a, inner-b) = inner-ranges.at(inner-i)
     let (outer-a, outer-b) = outer-ranges.at(outer-i)
 
-    while inner-a >= outer-b {
-      // the inner range is in a subsequent outer range
+    if outer-b <= inner-a  {
+      // the inner range is beyond the current outer range
       outer-i += 1
-      assert(outer-i < outer-ranges.len(), message: "inner ranges can't lie beyond the last outer range")
-      let old-outer-b = outer-b
-      (outer-a, outer-b) = outer-ranges.at(outer-i)
-      skipped-lines += outer-a - old-outer-b
+      // the rest of the inner ranges are not part of something displayed
+      if outer-i >= outer-ranges.len() { break }
+
+      // process the skip and go to the next iteration
+      let next-outer-a = outer-ranges.at(outer-i).first()
+      skipped-lines += next-outer-a - outer-b
+      continue
     }
 
-    // now we're in the right range. the outer range must fully contain the inner one:
-    // if there was an indicator that interrupted the outer range, it must also have interrupted the inner range
-    assert(inner-b <= outer-b, message: "each inner range must be fully contained in one outer range")
-    inner-a -= skipped-lines
-    inner-b -= skipped-lines
-    if ranges.len() != 0 and ranges.last().last() == inner-a {
+    if inner-b <= outer-a {
+      // the inner range was before the first/between two outer ranges
+      inner-i += 1
+      // if all inner ranges have been processed, we're done
+      if inner-i >= inner-ranges.len() { break }
+    }
+
+    // the current inner overlaps the current outer range
+    let a = calc.max(outer-a, inner-a) - skipped-lines
+    let b = calc.min(outer-b, inner-b) - skipped-lines
+    if ranges.len() != 0 and ranges.last().last() == a {
       // after removing skipped lines, the new range joins with the previous one
-      ranges.last().last() = inner-b
+      ranges.last().last() = b
     } else {
-      ranges.push((inner-a, inner-b))
+      ranges.push((a, b))
+    }
+
+    if inner-b <= outer-b {
+      // continue in the same outer range, after the current inner range
+      outer-ranges.at(outer-i).first() = inner-b
+    }
+    if outer-b <= inner-b {
+      // continue in the same inner range, after the current outer range
+      inner-ranges.at(inner-i).first() = outer-b
     }
   }
 
