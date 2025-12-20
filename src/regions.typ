@@ -25,7 +25,7 @@
     // all  included, no exclusions
     (none, ())
   } else {
-    assert(regions.all(x => x.match(regex(`^!?\w+$`.text)) != none), message: "regions must consist of word characters")
+    assert(regions.all(x => x.match(regex(`^!?[-\w]+$`.text)) != none), message: "regions must consist of word characters")
 
     let excluded-regions = regions.filter(x => x.starts-with("!")).map(x => x.slice(1))
     if regions.len() == excluded-regions.len() {
@@ -42,7 +42,7 @@
   let current-regions = ()
   let current-start = -1
   for (index, line) in lines.enumerate(start: 1) {
-    let indicator = line.match(regex(`^\s*//\s*@region((?:\s+(?:start|end):\w+)*)\s*$`.text))
+    let indicator = line.match(regex(`^\s*//\s*@region((?:\s+(?:start|end):[-\w]+)*)\s*$`.text))
     if indicator != none {
       if current-start not in (none, -1) {
         // the region is ending or interrupted; push a range

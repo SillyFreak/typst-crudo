@@ -16,8 +16,8 @@
   assert.eq(type(current), str, message: "current must be a string")
   assert.eq(type(history), array, message: "history must be an array of strings")
   assert(history.all(x => type(x) == str), message: "history must be an array of strings")
-  assert(current.match(regex(`^!?\w+$`.text)) != none, message: "current must consist of word characters")
-  assert(history.all(x => x.match(regex(`^!?\w+$`.text)) != none), message: "all history elements must consist of word characters")
+  assert(current.match(regex(`^!?[-\w]+$`.text)) != none, message: "current must consist of word characters")
+  assert(history.all(x => x.match(regex(`^!?[-\w]+$`.text)) != none), message: "all history elements must consist of word characters")
 
   let current-index = history.position(x => x == current)
   assert(current-index != none, message: "the current step must be part of the history")
@@ -29,8 +29,8 @@
   let only-before = none
   for (index, line) in lines.enumerate(start: 1) {
     let indicator = line.match(regex(
-      `^\s*//\s*@(start|end):(\w+)\s*$`.text + "|" +
-      `^\s*/\*\s*@before:(\w+)\s*$`.text + "|" +
+      `^\s*//\s*@(start|end):([-\w]+)\s*$`.text + "|" +
+      `^\s*/\*\s*@before:([-\w]+)\s*$`.text + "|" +
       `^\s*\*/\s*$`.text))
 
     let indicator = if indicator != none {
