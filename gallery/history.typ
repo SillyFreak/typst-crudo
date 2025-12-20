@@ -3,6 +3,7 @@
 
 #import "/src/lib.typ" as crudo: history
 
+#set document(date: none)
 #set page(height: auto, margin: 1cm)
 #show raw.where(block: true): set text(0.9em)
 

@@ -1,3 +1,17 @@
+/// Returns an array of line ranges; each range is a pair of numbers representing the lower
+/// (inclusive) and upper (exclusive) bound of the range.
+/// The ranges that are returned are specified via the `current` step, which must be an element of
+/// the specified `history`.
+/// The lines that are returned are those that come in the history before or at `current`, but have
+/// not been removed through an `@before` tag.
+///
+/// The resulting ranges can be used with #ref-fn("lines()") (although see @@extract() as a
+/// shortcut), @@ranges-within, or with libraries such as
+/// #link("https://typst.app/universe/package/codly")[codly] or
+/// #link("https://typst.app/universe/package/zebraw")[zebraw].
+/// See @history for more examples on using histories.
+///
+/// -> array
 #let ranges(
   /// a single `raw` element or (multi line) string
   /// -> content | str
@@ -90,7 +104,15 @@
   ranges
 }
 
-
+/// Uses @@ranges() combined with #ref-fn("lines()") to select a subset of lines from a code
+/// snippet.
+/// This function is equivalent to
+///
+/// ```typc
+/// lines(raw-block, ..ranges(raw-block, current, history).map(((a, b)) => range(a, b)))
+/// ```
+///
+/// -> content
 #let extract(
   /// a single `raw` element or (multi line) string
   /// -> content | str
@@ -109,3 +131,8 @@
 }
 
 #import "regions.typ": ranges-within
+
+/// This is a re-export of #ref-fn("regions.ranges-within()") since that function is also appropriate for the ranges produced by this module.
+///
+/// -> function
+#let ranges-within = ranges-within

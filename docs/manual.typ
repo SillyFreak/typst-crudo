@@ -181,6 +181,118 @@ The #ref-fn("regions.ranges-within()") function can handle this situation for yo
   ```
 )
 
+== Documenting evolving code snippets <history>
+
+For explanatory texts it is often useful to develop a code snippet in multiple steps, where early code is later replaced by a more capable version.
+#footnote[
+  In particular, this feature is inspired by _Crafting Interpreters_ by Robert Nystrom.
+  For example, in #link("http://www.craftinginterpreters.com/statements-and-state.html#executing-statements")["Executing statements"] right at the end, the `interpreter.interpret(statements);` line is inserted.
+  In the #link("https://github.com/munificent/craftinginterpreters/blob/4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4/java/com/craftinginterpreters/lox/Lox.java#L100-L105")[accompanying source code on Github], you can see how both the old and new source code is modelled using history-aware regions.
+]
+Using the region feature shown above for that can quickly get out of hand.
+Consider this code as an example:
+
+#let code = crudo.read("assets/history/bad.rs", properties: (block: true, lang: "rust"))
+#code
+
+This code file doesn't really consist of multiple parts that are explained separately, but different stages of development.
+The `main()` function declaration should always be presented, and individual parts of the implementation should be shown.
+To do so, the example on the next page always skips _all but one_ of the implementation snippets.
+It gets worse when there are multiple parts of the code that evolve:
+the set of regions will grow, and which regions belong together becomes increasingly complex.
+Through this complexity, the advantage of not having to hardcode line numbers vanishes.
+
+An additional downside is this:
+when executed, it would run _all parts of the logic_ (the `todo!()`s notwithstanding), not just the latest one.
+Not even the final form of the code can be tested!
+
+#man-style.show-example(
+  in-raw: false,
+  dir: ttb,
+  no-codly: false,
+  scale-preview: 100%,
+  scope: (crudo: crudo, code: code),
+  ```typ
+  >>>#show: pad.with(x: -2mm)
+  <<<#let code = crudo.read("greet.rs", properties: (block: true, lang: "rust"))
+  #grid(
+    columns: (1fr, 1.2fr),
+    crudo.regions.extract(code, ("!parametric", "!localized")) +
+    crudo.regions.extract(code, ("!simple", "!localized")),
+    crudo.regions.extract(code, ("!simple", "!parametric")),
+  )
+  ```
+)
+
+To handle this kind of use case, _Crudo_ provides the `history` module.
+The #ref-fn("history.ranges()") and #ref-fn("history.extract()") functions work similar to their region counterparts, but instead of taking any number of regions, they take the single current step and a complete list of the steps in the file's history as parameters.
+The #ref-fn("history.ranges-within") function is a direct alias to #ref-fn("regions.ranges-within()"), as it's directly applicable to the history module as well.
+
+Here's how to use the module for a direct comparison:
+
+#let code = crudo.read("assets/history/greet.rs", properties: (block: true, lang: "rust"))
+
+#man-style.show-example(
+  in-raw: false,
+  dir: ttb,
+  no-codly: false,
+  scale-preview: 100%,
+  scope: (crudo: crudo, code: code),
+  ```typ
+  >>>#show: pad.with(x: -2mm)
+  <<<#let code = crudo.read("greet.rs", properties: (block: true, lang: "rust"))
+  #let history = ("simple", "parametric", "localized")
+  #grid(
+    columns: (1fr, 1.2fr),
+    crudo.history.extract(code, "simple", history) +
+    crudo.history.extract(code, "parametric", history),
+    crudo.history.extract(code, "localized", history),
+  )
+  ```
+)
+
+And here is how the code is prepared to be used with the history module:
+
+#code
+
+There are some differences here:
+
+- We are not declaring regions but steps; instead of writing `@region start:` we're just writing `@start:`.
+  Each tag can also only start or end a single step, not multiple or both,
+  and steps must be properly nested to reflect them happening sequentially.
+
+- The code as a whole is enclosed in a step.
+  This is necessary: code outside a step would not be considered part of the history and wouldn't be picked up.
+
+- There are also `@before:` tags, and these are wrapped in block comments.
+  That means when running the annotated code, only the final version of the code is actually used.
+  A `@before` tag's content will be removed from the enclosing step when the declared step is reached.
+  For example, line 12 in the `@before:localized` tag will be displayed in the `parametric` step, but not later.
+
+You may have also noticed that the `let name = todo!();` line is no longer duplicated;
+achieving that with regions would have been way harder.
+
+That `@before` tags are block comments also has its downsides, unfortunately:
+when not using `extract` and instead using a code block library to limit the lines, the syntax highlighting will pick up on the code actually being a comment:
+
+#man-style.show-example(
+  in-raw: false,
+  no-codly: false,
+  scale-preview: 100%,
+  scope: (crudo: crudo, code: code, codly: codly),
+  ```typ
+  >>>#show: pad.with(x: -2mm)
+  >>>#let history = ("simple", "parametric", "localized")
+  #let ranges = crudo.history.ranges(
+      code, "simple", history)
+  #codly.codly(ranges: ranges.map(
+      ((a, b)) => (a, b - 1)))
+  #code
+  ```
+)
+
+The history module is therefore less useful for this kind of usage.
+
 = Module reference
 
 #module(
@@ -197,5 +309,6 @@ The #ref-fn("regions.ranges-within()") function can handle this situation for yo
 
 #module(
   read("/src/history.typ"),
+  scope: (ref-fn: ref-fn),
   name: "history",
 )
