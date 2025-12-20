@@ -1,8 +1,25 @@
+/// Returns an array of line ranges; each range is a pair of numbers representing the lower
+/// (inclusive) and upper (exclusive) bound of the range.
+/// There is no one to one correspondence between the requested `regions` and the returned ranges:
+///
+/// - if a region contains region markers, those markers will be excluded, resulting in multiple
+///   ranges for that region;
+/// - if a region appears multiple times in the `raw-block`, each appearance will have its own
+///   range(s).
+///
+/// The resulting ranges can be used with #ref-fn("lines()") (although see @@extract() as a
+/// shortcut), @@ranges-within(), or with libraries such as
+/// #link("https://typst.app/universe/package/codly")[codly] or
+/// #link("https://typst.app/universe/package/zebraw")[zebraw].
+/// See @regions for more examples on using regions.
+///
+/// -> array
 #let ranges(
   /// a single `raw` element or (multi line) string
   /// -> content | str
   raw-block,
-  /// a single or array of region names, or `none` to get all lines that don't indicate regions
+  /// a single or array of region names, or `none` to get all lines that don't indicate regions.
+  /// Prefixing a region with `!` excludes the region instead of excluding it.
   /// -> none | str | array
   regions,
 ) = {
@@ -89,11 +106,21 @@
   ranges
 }
 
+/// Uses @@ranges() combined with #ref-fn("lines()") to select a subset of lines from a code
+/// snippet.
+/// This function is equivalent to
+///
+/// ```typc
+/// lines(raw-block, ..ranges(raw-block, regions).map(((a, b)) => range(a, b)))
+/// ```
+///
+/// -> content
 #let extract(
   /// a single `raw` element or (multi line) string
   /// -> content | str
   raw-block,
-  /// a single or array of region names, or `none` to get all lines that don't indicate regions
+  /// a single or array of region names, or `none` to get all lines that don't indicate regions.
+  /// Prefixing a region with `!` excludes the region instead of excluding it.
   /// -> none | str | array
   regions,
 ) = {
@@ -102,8 +129,32 @@
   lines(raw-block, ..ranges(raw-block, regions).map(((a, b)) => range(a, b)))
 }
 
+/// Translates the `inner-ranges` line numbers for use in a code block that has been reduced to only
+/// contain the ranges from `outer-ranges`.
+///
+/// Let's say we have a code snippet with 20 lines and wanted to skip lines 1-2 and 11-12.
+/// We would therefore specify `outer-ranges` as #((3, 11), (13, 21)) (upper bound is exclusive).
+/// In the resulting snippet, we want to refer to lines 4 and 14-15, so we specify `inner-ranges` as
+/// #((4, 5), (14, 16))---but because we're removing lines, we need to use different line numbers to
+/// refer to these!
+/// `ranges-within()` will give us the correct result ranges of #((2, 3), (10, 12)).
+///
+/// If the `inner-ranges` contain lines that are not contained in the `outer-ranges`, these will be
+/// dropped.
+/// See @highlighting-regions for more examples on using ranges within ranges.
+///
+/// -> array
 #let ranges-within(
+  /// an array of line ranges, as returned by @@ranges().
+  /// This determines what lines are present in the resulting code snippet and what line numbers are
+  /// skipped.
+  ///  -> array
   outer-ranges,
+  /// an array of line ranges, as returned by @@ranges().
+  /// This determines what lines should be selected within the outer ranges.
+  /// Lines not inside the outer ranges are skipped, and line numbers are changed to skip any lines
+  /// that don't appear in the outer ranges.
+  /// -> array
   inner-ranges,
 ) = {
   assert(
