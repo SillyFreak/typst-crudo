@@ -49,6 +49,7 @@
   for (index, line) in lines.enumerate(start: 1) {
     let indicator = line.match(regex(
       `^\s*//\s*@(start|end):([-\w]+)\s*$`.text + "|" +
+      `^\s*//\s*@region((?:\s+(?:start|end):[-\w]+)*)\s*$`.text + "|" +
       `^\s*/\*\s*@before:([-\w]+)\s*$`.text + "|" +
       `^\s*\*/\s*$`.text))
 
@@ -56,7 +57,9 @@
       if indicator.captures.at(0) != none {
         ("regular", ..indicator.captures.slice(0, 2))
       } else if indicator.captures.at(2) != none {
-        ("before", "start", ..indicator.captures.slice(2, 3))
+        ("region", none)
+      } else if indicator.captures.at(3) != none {
+        ("before", "start", ..indicator.captures.slice(3, 4))
       } else if only-before != none {
         ("before", "end")
       }
@@ -83,6 +86,8 @@
         only-before = name
       } else if (kind, pos) == ("before", "end") {
         only-before = none
+      } else if kind == "region" {
+        // nothing changes, but the line is ignored and a new range (not step) starts
       } else {
         panic()
       }

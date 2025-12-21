@@ -4,10 +4,12 @@ pub fn main() {
     println!("Hello World");
     */
     // @start:localized
+    // @region start:TODOs
     let local_greeting = todo!();
     // @end:localized
     // @start:parametric
     let name = todo!();
+    // @region end:TODOs
     /* @before:localized
     println!("Hello {name}");
     */

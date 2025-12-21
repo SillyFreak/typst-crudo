@@ -257,6 +257,7 @@ There are some differences here:
 - We are not declaring regions but steps; instead of writing `@region start:` we're just writing `@start:`.
   Each tag can also only start or end a single step, not multiple or both,
   and steps must be properly nested to reflect them happening sequentially.
+    - There is also a region called `TODOs`; you can learn about that in @highlighting-history.
 
 - The code as a whole is enclosed in a step.
   This is necessary: code outside a step would not be considered part of the history and wouldn't be picked up.
@@ -289,6 +290,45 @@ when not using `extract` and instead using a code block library to limit the lin
 )
 
 The history module is therefore less useful for this kind of usage.
+
+=== Highlighting regions inside evolving code snippets <highlighting-history>
+
+While using histories is great, they don't readily support selecting regions for highlighting:
+you can't easily select _only_ the current step, or a different subset of lines.
+The #ref-fn("history.ranges()") function therefore slightly integrates with #ref-fn("regions.ranges()"), in that it _also_ ignores region indicators.
+That lets you insert region indicators into your code files which won't be shown in code snippets, which you can then use for highlighting:
+
+#man-style.show-example(
+  in-raw: false,
+  dir: ttb,
+  scale-preview: 100%,
+  no-codly: false,
+  scope: (crudo: crudo, code: code, codly: codly),
+  ```typ
+  >>>#show: pad.with(x: -2mm)
+  >>>#set text(0.8em)
+  >>>#import "@local/zebraw:0.6.1"
+  #let history = ("simple", "parametric", "localized")
+  #let ranges = crudo.history.ranges(code, "parametric", history)
+  #let highlights = crudo.regions.ranges(code, "TODOs")
+  #let highlight-lines = highlights.map(((a, b)) => range(a, b)).join()
+  #grid(
+    columns: (1fr, 1fr),
+  <<<  codly.codly-init[
+  >>>  [
+      #codly.codly(ranges: ranges.map(((a, b)) => (a, b - 1)),
+          highlighted-lines: highlight-lines)
+      #code
+    ],
+  >>>  codly.no-codly(
+    zebraw.zebraw(line-range: ranges, highlight-lines: highlight-lines, code),
+  >>>  ),
+  )
+  ```
+)
+
+The `TODOs` range contained more than just this one line (another one comes from the `localized` step), but the non-shown lines don't hurt during highlighting.
+Likewise, #ref-fn("history.ranges-within") will ignore them as well.
 
 = Module reference
 
