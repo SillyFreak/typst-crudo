@@ -80,7 +80,7 @@ These ranges can be further processed for use with #ref-fn("lines()") or package
   no-codly: false,
   scope: (crudo: crudo, code: code, codly: codly),
   ```typ
-  >>>#show: pad.with(x: -2mm)
+  >>>#show: pad.with(top: 2mm, x: -2mm)
   >>>#set text(0.8em)
   >>>#import codly: codly, codly-init, no-codly
   <<<#import "@preview/codly:1.3.0": codly, codly-init
@@ -127,7 +127,7 @@ Here is again an example using both codly and zebraw:
   no-codly: false,
   scope: (crudo: crudo, code: code, codly: codly),
   ```typ
-  >>>#show: pad.with(x: -2mm)
+  >>>#show: pad.with(top: 2mm, x: -2mm)
   >>>#set text(0.8em)
   >>>#import codly: codly, codly-init, no-codly
   >>>#import "@local/zebraw:0.6.1": zebraw
@@ -183,6 +183,8 @@ Below is an example:
 
 == Documenting evolving code snippets <history>
 
+=== Motivation: the downside of regions
+
 For explanatory texts it is often useful to develop a code snippet in multiple steps, where early code is later replaced by a more capable version.
 #footnote[
   In particular, this feature is inspired by #link("http://www.craftinginterpreters.com/")[_Crafting Interpreters_ by Robert Nystrom].
@@ -197,14 +199,13 @@ Consider this code as an example:
 
 This code file doesn't really consist of multiple parts that are explained separately, but different stages of development.
 The `main()` function declaration should always be presented, and individual parts of the implementation should be shown.
-To do so, the example on the next page always skips _all but one_ of the implementation snippets.
-It gets worse when there are multiple parts of the code that evolve:
-the set of regions will grow, and which regions belong together becomes increasingly complex.
-Through this complexity, the advantage of not having to hardcode line numbers vanishes.
+To do so, It's necessary to skip _all but one_ of the implementation snippets.
 
-An additional downside is this:
-when executed, it would run _all parts of the logic_ (the `todo!()`s notwithstanding), not just the latest one.
-Not even the final form of the code can be tested!
+It gets worse when there are multiple parts of the code that evolve:
+the set of regions will grow, and which regions must be combined to show the desired code becomes increasingly complex.
+Through this renewed entanglement between source code and Typst markup, the advantage of not having to hardcode line numbers vanishes.
+
+Here is a concrete example of using regions to display this code in all three stages:
 
 #man-style.show-example(
   in-raw: false,
@@ -223,6 +224,14 @@ Not even the final form of the code can be tested!
   )
   ```
 )
+
+An additional downside is this:
+when executed, the source file would run _all parts of the logic_ (the `todo!()`s notwithstanding), not just the latest one.
+In this example, that would mean multiple printed greetings;
+in more complex cases the code may not compile due to errors like conflicting variable declarations.
+The result is that not even the final version of the code can be tested, to ensure a baseline of correctness.
+
+=== _Crudo's_ `history` module
 
 To handle this kind of use case, _Crudo_ provides the `history` module.
 The #ref-fn("history.ranges()") and #ref-fn("history.extract()") functions work similar to their region counterparts, but instead of taking any number of regions, they take the single current step and a complete list of the steps in the file's history as parameters.
