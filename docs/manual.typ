@@ -82,22 +82,23 @@ These ranges can be further processed for use with #ref-fn("lines()") or package
   ```typ
   >>>#show: pad.with(x: -2mm)
   >>>#set text(0.8em)
-  <<<#import "@preview/codly:1.3.0"
-  >>>#import "@local/zebraw:0.6.1"
-  <<<#import "@preview/zebraw:0.6.1"
+  >>>#import codly: codly, codly-init, no-codly
+  <<<#import "@preview/codly:1.3.0": codly, codly-init
+  >>>#import "@local/zebraw:0.6.1": zebraw
+  <<<#import "@preview/zebraw:0.6.1": zebraw
   #let ranges = crudo.regions.ranges(code, "basics")
   #grid(
     columns: (1fr, 1fr, 1fr),
-  >>>  codly.no-codly(
+  >>>  no-codly(
     crudo.lines(code, ..ranges.map(((a, b)) => range(a, b))),
   >>>  ),
-  <<<  codly.codly-init[
+  <<<  codly-init[
   >>>  [
-      #codly.codly(ranges: ranges.map(((a, b)) => (a, b - 1)))
+      #codly(ranges: ranges.map(((a, b)) => (a, b - 1)))
       #code
     ],
-  >>>  codly.no-codly(
-    zebraw.zebraw(line-range: ranges, code),
+  >>>  no-codly(
+    zebraw(line-range: ranges, code),
   >>>  ),
   )
   ```
@@ -128,20 +129,21 @@ Here is again an example using both codly and zebraw:
   ```typ
   >>>#show: pad.with(x: -2mm)
   >>>#set text(0.8em)
-  >>>#import "@local/zebraw:0.6.1"
+  >>>#import codly: codly, codly-init, no-codly
+  >>>#import "@local/zebraw:0.6.1": zebraw
   #let ranges = crudo.regions.ranges(code, "mutators")
   #let highlights = crudo.regions.ranges(code, "withdraw-body")
   #let highlight-lines = highlights.map(((a, b)) => range(a, b)).join()
   #grid(
     columns: (1fr, 1fr),
-  <<<  codly.codly-init[
+  <<<  codly-init[
   >>>  [
-      #codly.codly(ranges: ranges.map(((a, b)) => (a, b - 1)),
+      #codly(ranges: ranges.map(((a, b)) => (a, b - 1)),
           highlighted-lines: highlight-lines)
       #code
     ],
-  >>>  codly.no-codly(
-    zebraw.zebraw(line-range: ranges, highlight-lines: highlight-lines, code),
+  >>>  no-codly(
+    zebraw(line-range: ranges, highlight-lines: highlight-lines, code),
   >>>  ),
   )
   ```
@@ -166,13 +168,14 @@ Below is an example:
   ```typ
   >>>#show: pad.with(x: -6mm)
   >>>#set text(0.8em)
+  >>>#import codly: codly, codly-init, no-codly
   #let ranges = crudo.regions.ranges(code, "mutators")
   #let highlights = crudo.regions.ranges-within(ranges,
       crudo.regions.ranges(code, "withdraw-body"))
   #let highlight-lines = highlights.map(((a, b)) => range(a, b)).join()
-  <<<#codly.codly-init[
+  <<<#codly-init[
   >>>#[
-    #codly.codly(highlighted-lines: highlight-lines)
+    #codly(highlighted-lines: highlight-lines)
     #crudo.lines(code, ..ranges.map(((a, b)) => range(a, b)))
   ]
   ```
@@ -280,11 +283,12 @@ when not using `extract` and instead using a code block library to limit the lin
   scope: (crudo: crudo, code: code, codly: codly),
   ```typ
   >>>#show: pad.with(x: -2mm)
+  >>>#import codly: codly, codly-init, no-codly
   >>>#let history = ("simple", "parametric", "localized")
   #let ranges = crudo.history.ranges(
       code, "simple", history)
-  #codly.codly(ranges: ranges.map(
-      ((a, b)) => (a, b - 1)))
+  #codly(ranges:
+      ranges.map(((a, b)) => (a, b - 1)))
   #code
   ```
 )
@@ -307,21 +311,22 @@ That lets you insert region indicators into your code files which won't be shown
   ```typ
   >>>#show: pad.with(x: -2mm)
   >>>#set text(0.8em)
-  >>>#import "@local/zebraw:0.6.1"
+  >>>#import codly: codly, codly-init, no-codly
+  >>>#import "@local/zebraw:0.6.1": zebraw
   #let history = ("simple", "parametric", "localized")
   #let ranges = crudo.history.ranges(code, "parametric", history)
   #let highlights = crudo.regions.ranges(code, "TODOs")
   #let highlight-lines = highlights.map(((a, b)) => range(a, b)).join()
   #grid(
     columns: (1fr, 1fr),
-  <<<  codly.codly-init[
+  <<<  codly-init[
   >>>  [
-      #codly.codly(ranges: ranges.map(((a, b)) => (a, b - 1)),
+      #codly(ranges: ranges.map(((a, b)) => (a, b - 1)),
           highlighted-lines: highlight-lines)
       #code
     ],
-  >>>  codly.no-codly(
-    zebraw.zebraw(line-range: ranges, highlight-lines: highlight-lines, code),
+  >>>  no-codly(
+    zebraw(line-range: ranges, highlight-lines: highlight-lines, code),
   >>>  ),
   )
   ```
