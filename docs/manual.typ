@@ -36,11 +36,11 @@ While a package can't add methods such as `raw.slice()` to an element, we can at
 - #ref-fn("read()") reads a text file and puts it in a raw element with the provided `raw` properties.
 - #ref-fn("map()"), #ref-fn("filter()") and #ref-fn("slice()") are analogous to their `array` counterparts.
 - #ref-fn("lines()") is similar to `slice()` but allows more advanced line selections in a single step.
-- #ref-fn("join()") combines multiple `raw` elements and is convenient e.g. to add preambles to code snippets.
+- #ref-fn("join()") combines multiple `raw` elements, e.g. to easily add preambles to code snippets.
 
 All functions that accept raw elements as parameters alternatively accept simple strings. In these cases, a string `code` behaves like `raw(code)`, i.e. it's not a `block` element and has no `lang` set on it. This is mostly useful with #ref-fn("join()"), which takes multiple raw elements, but the other functions don't disallow this usage.
 
-== Handling regions in code files <regions>
+= Handling regions in code files <regions>
 
 _Crudo_ also contains utilities for identifying and extracting ranges of code from source files.
 Let's assume you have the following source file (any language will work; we're not using Typst for the example to avoid making things too meta):
@@ -115,7 +115,7 @@ This is because we are producing a new `raw` element with just a subset of the l
 In contrast, the latter two examples keep the original `raw` element, and instruct the library to only render some of those.
 The libraries are aware of the actual line numbers and will preserve them.
 
-=== Highlighting regions <highlighting-regions>
+== Highlighting regions <highlighting-regions>
 
 Identifying region ranges can of course not only be used to filter lines, but also for highlighting certain ranges.
 Here is again an example using both codly and zebraw:
@@ -181,9 +181,9 @@ Below is an example:
   ```
 )
 
-== Documenting evolving code snippets <history>
+= Documenting evolving code snippets <history>
 
-=== Motivation: the downside of regions
+== Motivation: the downside of regions
 
 For explanatory texts it is often useful to develop a code snippet in multiple steps, where early code is later replaced by a more capable version.
 #footnote[
@@ -231,7 +231,7 @@ In this example, that would mean multiple printed greetings;
 in more complex cases the code may not compile due to errors like conflicting variable declarations.
 The result is that not even the final version of the code can be tested, to ensure a baseline of correctness.
 
-=== _Crudo's_ `history` module
+== _Crudo's_ `history` module
 
 To handle this kind of use case, _Crudo_ provides the `history` module.
 The #ref-fn("history.ranges()") and #ref-fn("history.extract()") functions work similar to their region counterparts, but instead of taking any number of regions, they take the single current step and a complete list of the steps in the file's history as parameters.
@@ -304,7 +304,7 @@ when not using `extract` and instead using a code block library to limit the lin
 
 The history module is therefore less useful for this kind of usage.
 
-=== Highlighting regions inside evolving code snippets <highlighting-history>
+== Highlighting regions inside evolving code snippets <highlighting-history>
 
 While using histories is great, they don't readily support selecting regions for highlighting:
 you can't easily select _only_ the current step, or a different subset of lines.
