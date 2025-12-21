@@ -1,3 +1,6 @@
+#import "history.typ"
+#import "regions.typ"
+
 /// _raw-to-lines_: extract lines and properties from a `raw` element.
 ///
 /// #example(ratio: 1.1, scale-preview: 100%, ````typc
