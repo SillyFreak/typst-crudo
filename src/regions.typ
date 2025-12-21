@@ -1,5 +1,15 @@
 /// Returns an array of line ranges; each range is a pair of numbers representing the lower
 /// (inclusive) and upper (exclusive) bound of the range.
+///
+/// The ranges are selected through the specified regions, and regions are indicated in the
+/// `raw-block` by comments of the form `// @region start:<region-name>` and
+/// `// @region end:<region-name>`
+/// (multiple `start:` and `end:` indicators may be part of the same comment).
+/// Regions don't need to be nested; they can freely overlap.
+///
+/// Making the comment format more flexible (e.g. allowing `# @region ...` for Python) is planned but not yet
+/// supported.
+///
 /// There is no one to one correspondence between the requested `regions` and the returned ranges:
 ///
 /// - if a region contains region markers, those markers will be excluded, resulting in multiple
@@ -132,12 +142,16 @@
 /// Translates the `inner-ranges` line numbers for use in a code block that has been reduced to only
 /// contain the ranges from `outer-ranges`.
 ///
+/// #let outer = ((3, 11), (13, 21))
+/// #let inner = ((4, 5), (14, 16))
+/// #let result = crudo.regions.ranges-within(outer, inner)
+///
 /// Let's say we have a code snippet with 20 lines and wanted to skip lines 1-2 and 11-12.
-/// We would therefore specify `outer-ranges` as #((3, 11), (13, 21)) (upper bound is exclusive).
+/// We would therefore specify `outer-ranges` as #outer (upper bound is exclusive).
 /// In the resulting snippet, we want to refer to lines 4 and 14-15, so we specify `inner-ranges` as
-/// #((4, 5), (14, 16))---but because we're removing lines, we need to use different line numbers to
+/// #inner;---but because we're removing lines, we need to use different line numbers to
 /// refer to these!
-/// `ranges-within()` will give us the correct result ranges of #((2, 3), (10, 12)).
+/// `ranges-within()` will give us the correct result ranges of #result.
 ///
 /// If the `inner-ranges` contain lines that are not contained in the `outer-ranges`, these will be
 /// dropped.
@@ -152,8 +166,8 @@
   outer-ranges,
   /// an array of line ranges, as returned by @@ranges().
   /// This determines what lines should be selected within the outer ranges.
-  /// Lines not inside the outer ranges are skipped, and line numbers are changed to skip any lines
-  /// that don't appear in the outer ranges.
+  /// Lines not inside the outer ranges are skipped, and line numbers are changed to account for
+  /// lines that don't appear in the outer ranges.
   /// -> array
   inner-ranges,
 ) = {

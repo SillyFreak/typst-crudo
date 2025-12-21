@@ -1,9 +1,14 @@
 /// Returns an array of line ranges; each range is a pair of numbers representing the lower
 /// (inclusive) and upper (exclusive) bound of the range.
+///
 /// The ranges that are returned are specified via the `current` step, which must be an element of
-/// the specified `history`.
-/// The lines that are returned are those that come in the history before or at `current`, but have
-/// not been removed through an `@before` tag.
+/// the specified `history` of steps.
+/// In the `raw-block`, the steps are indicated by comments of the form `// @start:<step-name>` and
+/// `// @end:<step-name>`;
+/// steps that remove code are enclosed in `/* @before:<step-name>` and `*/`.
+///
+/// The lines that are returned are those that come in the history before or at the `current` step,
+/// but have not been removed before the current step.
 ///
 /// The resulting ranges can be used with #ref-fn("lines()") (although see @@extract() as a
 /// shortcut), @@ranges-within, or with libraries such as

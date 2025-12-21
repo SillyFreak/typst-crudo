@@ -68,7 +68,7 @@ these can be processed by _Crudo_ to identify and extract ranges; for example, u
 
 The result of #ref-fn("regions.ranges()") is an array of region bounds;
 for example, the #(2, 9) means that lines 2 (inclusive) to 9 (exclusive) are part of the `basics` region.
-A leading `!` can be used to exclude a regin.
+A leading `!` can be used to exclude a region.
 Region indicators that may be embedded in a region are of course skipped, e.g. lines 15 and 21 for `withdraw-body` inside the `mutators` region.
 
 These ranges can be further processed for use with #ref-fn("lines()") or packages such as #link("https://typst.app/universe/package/codly")[codly] or #link("https://typst.app/universe/package/zebraw")[zebraw]:
@@ -106,7 +106,7 @@ These ranges can be further processed for use with #ref-fn("lines()") or package
 There are some differences in the exact parameters:
 - #ref-fn("lines()") expects arrays of individual lines (which we can construct using the `range()` function). This exact usage can be simplified by using the #ref-fn("regions.extract()") shorthand;
 - codly uses an inclusive upper bound for ranges;
-- zebraw uses exclusive upper bounds and we don't need to change the ranges at all.
+- zebraw uses exclusive upper bounds, so we don't need to change the ranges at all.
 
 An important difference between the first and the latter two examples is line numbering:
 if we used one of the two code block libraries to format the first code snippet, we'd see line numbers from 1 to 11.
@@ -128,9 +128,7 @@ Here is again an example using both codly and zebraw:
   ```typ
   >>>#show: pad.with(x: -2mm)
   >>>#set text(0.8em)
-  <<<#import "@preview/codly:1.3.0"
   >>>#import "@local/zebraw:0.6.1"
-  <<<#import "@preview/zebraw:0.6.1"
   #let ranges = crudo.regions.ranges(code, "mutators")
   #let highlights = crudo.regions.ranges(code, "withdraw-body")
   #let highlight-lines = highlights.map(((a, b)) => range(a, b)).join()
@@ -154,8 +152,10 @@ Both libraries take an array of line numbers for highlights.
 We create that by applying `range()` to each highlighted range, and joining all such ranges into a single array.
 
 If you instead want to use the #ref-fn("lines()") approach (to not have gaps in the line numbers), there's a little more work to do:
-the highlighted range is of the numbers #(16, 21) but the `raw` block returned by #ref-fn("lines()") will not contain these lines, or have different code in these lines.
+the highlighted range is of the numbers #(16, 21) but the `raw` block returned by #ref-fn("lines()") will not contain these lines (or have different code in these lines).
 The #ref-fn("regions.ranges-within()") function can handle this situation for you:
+it transforms a list of line number ranges into what they should be inside a snippet that has some lines skipped.
+Below is an example:
 
 #man-style.show-example(
   in-raw: false,
@@ -166,9 +166,6 @@ The #ref-fn("regions.ranges-within()") function can handle this situation for yo
   ```typ
   >>>#show: pad.with(x: -6mm)
   >>>#set text(0.8em)
-  <<<#import "@preview/codly:1.3.0"
-  >>>#import "@local/zebraw:0.6.1"
-  <<<#import "@preview/zebraw:0.6.1"
   #let ranges = crudo.regions.ranges(code, "mutators")
   #let highlights = crudo.regions.ranges-within(ranges,
       crudo.regions.ranges(code, "withdraw-body"))
@@ -185,8 +182,8 @@ The #ref-fn("regions.ranges-within()") function can handle this situation for yo
 
 For explanatory texts it is often useful to develop a code snippet in multiple steps, where early code is later replaced by a more capable version.
 #footnote[
-  In particular, this feature is inspired by _Crafting Interpreters_ by Robert Nystrom.
-  For example, in #link("http://www.craftinginterpreters.com/statements-and-state.html#executing-statements")["Executing statements"] right at the end, the `interpreter.interpret(statements);` line is inserted.
+  In particular, this feature is inspired by #link("http://www.craftinginterpreters.com/")[_Crafting Interpreters_ by Robert Nystrom].
+  For example, in #link("http://www.craftinginterpreters.com/statements-and-state.html#executing-statements")["Executing statements"] right at the end, the `interpreter.interpret(statements);` line replaces a previous one.
   In the #link("https://github.com/munificent/craftinginterpreters/blob/4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4/java/com/craftinginterpreters/lox/Lox.java#L100-L105")[accompanying source code on Github], you can see how both the old and new source code is modelled using history-aware regions.
 ]
 Using the region feature shown above for that can quickly get out of hand.
